@@ -1,0 +1,114 @@
+<mvc:View controllerName="hcm.claim.controller.Main" xmlns:core="sap.ui.core" xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:mvc="sap.ui.core.mvc" xmlns:unified="sap.ui.unified" displayBlock="true" xmlns="sap.m" xmlns:f="sap.ui.layout.form">
+	<App>
+		<pages>
+			<Page title="{i18n>title}" showNavButton="true" navButtonPress="onNavButtonPress" navButtonText="Back">
+				<content>
+					<!--<List items="{/ClaimSet}">-->
+					<!--	<DisplayListItem label="{Pernr}" value="{Createdate}"></DisplayListItem>-->
+					<!--</List>-->
+					<ObjectHeader title="CLAIM NO: {local>/header/Claimno}" number="Status" intro="Personnel No.: {local>/empId}"
+						numberUnit="{path:'local>/header/Docstat', formatter : '.formatter.statusText'}"
+						icon="{path:'local>/header/Docstat', formatter : '.formatter.statusIcon'}"
+						numberState="{path:'local>/header/Docstat', formatter : '.formatter.statusState'}">
+						<!--<firstStatus>-->
+						<!--	<ObjectStatus text="Status: {path:'local>/header/Docstat', formatter : '.formatter.statusText'}"-->
+						<!--		state="{path:'local>/header/Docstat', formatter : '.formatter.statusState'}" icon="{path:'local>/header/Docstat', formatter : '.formatter.statusIcon'}"></ObjectStatus>-->
+						<!--</firstStatus>-->
+						<attributes>
+							<ObjectAttribute title="Create Date" text="{path: 'local>/header/CreatedOn'}"></ObjectAttribute>
+						</attributes>
+					</ObjectHeader>
+					<f:SimpleForm editable="true">
+						<f:content>
+							<Label text="Month"/>
+							<Select id="idMonth" items="{local>/calendar/months}" width="25%" enabled="{=${local>/header/Docstat}===''}" change="onDateChange">
+								<core:Item key="{local>abbreviation}" text="{local>name}"/>
+							</Select>
+							<Label text="Year"></Label>
+							<Select id="idYear" width="25%" items="{local>/calendar/years}" enabled="false" change="onDateChange">
+								<core:Item key="{local>year}" text="{local>year}"/>
+							</Select>
+						</f:content>
+					</f:SimpleForm>
+					<Table items="{local>/tableData}" alternateRowColors = "true" fixedLayout="false" noDataText="Add Items..."  mode="MultiSelect">
+						<headerToolbar>
+							<Toolbar>
+								<ToolbarSpacer/>
+								<Button text="Add" icon="sap-icon://add" press="onAddRow" type="Accept"
+									enabled="{path:'local>/header/Docstat', formatter : '.formatter.enabledItem'}"></Button>
+								<Button text="Delete" icon="sap-icon://delete" press="onDeleteRow" type="Reject"
+									enabled="{path:'local>/header/Docstat', formatter : '.formatter.enabledItem'}"></Button>
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column>
+								<Text text="{i18n>ClaimType}"></Text>
+							</Column>
+							<Column>
+								<Text text="{i18n>ClaimDate}"></Text>
+							</Column>
+							<Column>
+								<Text text="{i18n>StartTime}"></Text>
+							</Column>
+							<Column>
+								<Text text="{i18n>EndTime}"></Text>
+							</Column>
+							<Column>
+								<Text text="{i18n>Purpose}"></Text>
+							</Column>
+							<Column>
+								<Text text="{i18n>Destination}"></Text>
+							</Column>
+							<Column>
+								<Text text="{i18n>Status}"></Text>
+							</Column>
+							<Column>
+								<Text text="{i18n>ClaimAmount}"></Text>
+							</Column>
+							<Column>
+								<Text text="{i18n>Attachment}"></Text>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Select selectedKey="{local>Wagetype}" change="onLiveChange" enabled="{path:'local>Status', formatter : '.formatter.enabledItem'}">
+										<core:Item key="2509" text="Covering Forlift"/>
+										<core:Item key="2513" text="Hardship"/>
+									</Select>
+									<DatePicker dateValue="{path:'local>Createdate'}" displayFormat="dd.MM.yyyy" valueFormat="yyyyMMdd" change="onLiveChange"
+										enabled="{path:'local>Status', formatter : '.formatter.enabledItem'}" minDate="{local>/date/minDate}"
+										maxDate="{local>/date/maxDate}"/>
+									<TimePicker id="idST" value="{local>TimeStart}" valueFormat="HH:mm" displayFormat="hh:mm a" change="onLiveChange" placeholder="Start time"
+										enabled="{path:'local>Status', formatter : '.formatter.enabledItem'}"/>
+									<TimePicker id="idET" value="{local>TimeEnd}" valueFormat="HH:mm" displayFormat="hh:mm a" change="onLiveChange" placeholder="End time"
+										enabled="{path:'local>Status', formatter : '.formatter.enabledItem'}"/>
+									<Input value="{local>Purpose}"
+										enabled="{parts : [{path:'local>Wagetype'},{path:'local>Status'}], formatter : '.formatter.enabledWagetype'}"
+										liveChange="onLiveChange"/>
+									<Input value="{local>Destination}"
+										enabled="{parts : [{path:'local>Wagetype'},{path:'local>Status'}], formatter : '.formatter.enabledWagetype'}"
+										liveChange="onLiveChange"/>
+									<ObjectStatus class="sapUiSmallMargin" icon="{path:'local>Status', formatter : '.formatter.statusIcon'}"
+										state="{path:'local>Status', formatter : '.formatter.statusState'}" tooltip="{parts : [{path:'local>Comments'},{path:'local>Status'}], formatter : '.formatter.comments'}"/>
+									<Input value="{local>ClaimAmount}" enabled="{path:'local>Status', formatter : '.formatter.enabledItem'}" liveChange="onLiveChange"/>
+									<Button icon="sap-icon://attachment" text="{path:'local>To_Attachments', formatter : '.formatter.attachBtnText'}"
+										type="{path:'local>To_Attachments', formatter : '.formatter.attachBtnType'}"
+										enabled="{parts : [{path:'local>To_Attachments'},{path:'local>Status'}], formatter : '.formatter.enabledUploadBtn'}" press="onSelectPhoto"/>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</content>
+				<footer>
+					<Toolbar>
+						<ToolbarSpacer/>
+						<Button id="idonSave" type="Accept" text="{i18n>Save}" press="onSave" enabled="true"></Button>
+						<Button id="idonSubmit" type="Accept" text="{i18n>Submit}" press="onSubmit" enabled="false"></Button>
+					</Toolbar>
+				</footer>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>
